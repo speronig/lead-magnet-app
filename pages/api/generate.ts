@@ -89,7 +89,7 @@ Use clear formatting, short paragraphs, and bullet points where appropriate.
     // 🔹 Email the PDF with Nodemailer
     console.log("📤 Sending email to:", email);
     const transporter = nodemailer.createTransport({
-        host: 'smtp-relay.brevo.com',
+        host: 'live.smtp.mailtrap.io',
         port: 587,
         secure: false, // Brevo requires STARTTLS
         auth: {
