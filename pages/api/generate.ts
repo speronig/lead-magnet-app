@@ -91,6 +91,8 @@ Use clear formatting, short paragraphs, and bullet points where appropriate.
     `;
 
     console.log('📄 Sending HTML to PDFLayer...');
+    console.log('📤 HTML Preview:', html.slice(0, 300));
+
     const pdfResponse = await fetch(`https://api.pdflayer.com/api/convert?access_key=${process.env.PDFLAYER_API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
