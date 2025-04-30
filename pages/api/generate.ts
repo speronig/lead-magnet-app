@@ -100,8 +100,8 @@ Use clear formatting, short paragraphs, and bullet points where appropriate.
             
 
       await transporter.sendMail({
-        from: process.env.SMTP_USER,
-        to: email,
+        from:'test@leadmagnet.dev',
+        to:'user@example.com',
         subject: 'Your Lead Magnet PDF',
         text: 'Here is your custom lead magnet!',
         attachments: [
