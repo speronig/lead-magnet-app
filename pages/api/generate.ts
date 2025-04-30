@@ -86,14 +86,15 @@ Use clear formatting, short paragraphs, and bullet points where appropriate.
 
     // 🔹 Email the PDF with Nodemailer
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT),
-      secure: true,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
+        host: process.env.SMTP_HOST,
+        port: 465,
+        secure: true, // ⬅️ only if port is 465
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+      });
+      
 
     await transporter.sendMail({
       from: process.env.SMTP_USER,
