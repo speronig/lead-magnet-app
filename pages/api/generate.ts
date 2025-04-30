@@ -68,8 +68,8 @@ Use clear formatting, short paragraphs, and bullet points where appropriate.
     const fontSize = 12;
 
     // Wrap text into lines that fit page width
-    const lines = content.split('\n').flatMap(line =>
-      line.match(/.{1,90}(\s|$)/g) || ['']
+    const lines = content.split('\n').flatMap((line: string) =>
+    line.match(/.{1,90}(\s|$)/g) || ['']
     );
 
     let y = height - 40;
