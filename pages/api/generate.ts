@@ -30,7 +30,6 @@ Use clear formatting, short paragraphs, and bullet points where appropriate.
 `;
 
   try {
-    // 🔹 Call OpenAI
     const aiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -56,7 +55,6 @@ Use clear formatting, short paragraphs, and bullet points where appropriate.
 
     const content = json.choices[0].message.content;
 
-    // 🔹 Create styled HTML
     const html = `
       <html>
         <head>
@@ -90,23 +88,22 @@ Use clear formatting, short paragraphs, and bullet points where appropriate.
       </html>
     `;
 
-    // 🔹 Call PDFShift to convert HTML to PDF
-    const pdfResponse = await fetch('https://api.pdfshift.io/v3/convert', {
+    // 🔹 Convert HTML to PDF using PDFLayer
+    const pdfResponse = await fetch(`https://api.pdflayer.com/api/convert?access_key=${process.env.PDFLAYER_API_KEY}`, {
       method: 'POST',
-      headers: {
-        'Authorization': 'Basic ' + Buffer.from(`${process.env.PDFSHIFT_API_KEY}:`).toString('base64'),
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ source: html, sandbox: true }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        document_html: html,
+        test: 1 // Enable sandbox/test mode if needed
+      })
     });
 
     if (!pdfResponse.ok) {
-      throw new Error(`PDFShift error: ${pdfResponse.statusText}`);
+      throw new Error(`PDFLayer error: ${pdfResponse.statusText}`);
     }
 
     const pdfBytes = await pdfResponse.arrayBuffer();
 
-    // 🔹 Send email with Nodemailer
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT),
