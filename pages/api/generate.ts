@@ -100,8 +100,12 @@ Use clear formatting, short paragraphs, and bullet points where appropriate.
       })
     });
 
-    if (!pdfResponse.ok) {
-      throw new Error(`PDFLayer error: ${pdfResponse.statusText}`);
+    const contentType = pdfResponse.headers.get('content-type');
+    console.log('📦 PDFLayer content-type:', contentType);
+
+    if (!contentType?.includes('application/pdf')) {
+      const errorText = await pdfResponse.text();
+      throw new Error(`PDFLayer returned non-PDF: ${errorText}`);
     }
 
     const pdfBytes = await pdfResponse.arrayBuffer();
