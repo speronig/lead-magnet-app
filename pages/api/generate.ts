@@ -59,6 +59,7 @@ Use clear formatting, short paragraphs, and bullet points where appropriate.
     }
     
     const content = json.choices[0].message.content;
+    console.log("✅ OpenAI content generated");
 
     // 🔹 Generate PDF from AI content
     const pdfDoc = await PDFDocument.create();
@@ -83,8 +84,10 @@ Use clear formatting, short paragraphs, and bullet points where appropriate.
     }
 
     const pdfBytes = await pdfDoc.save();
+    console.log("✅ PDF generated, size:", pdfBytes.length);
 
     // 🔹 Email the PDF with Nodemailer
+    console.log("📤 Sending email to:", email);
     const transporter = nodemailer.createTransport({
         host: 'smtp-relay.brevo.com',
         port: 587,
@@ -95,18 +98,19 @@ Use clear formatting, short paragraphs, and bullet points where appropriate.
         },
       });      
 
-    await transporter.sendMail({
-      from: process.env.SMTP_USER,
-      to: email,
-      subject: 'Your Lead Magnet PDF',
-      text: 'Hi! Attached is your custom lead magnet based on your request.',
-      attachments: [
-        {
-          filename: 'lead-magnet.pdf',
-          content: Buffer.from(pdfBytes),
-        },
-      ],
-    });
+      await transporter.sendMail({
+        from: process.env.SMTP_USER,
+        to: email,
+        subject: 'Your Lead Magnet PDF',
+        text: 'Here is your custom lead magnet!',
+        attachments: [
+          {
+            filename: 'lead-magnet.pdf',
+            content: Buffer.from(pdfBytes),
+          },
+        ],
+      });
+      console.log("✅ Email sent to", email);
 
     res.status(200).json({ message: 'PDF sent successfully', content });
   } catch (err) {
