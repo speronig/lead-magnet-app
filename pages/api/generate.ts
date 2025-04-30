@@ -89,14 +89,15 @@ Use clear formatting, short paragraphs, and bullet points where appropriate.
     // 🔹 Email the PDF with Nodemailer
     console.log("📤 Sending email to:", email);
     const transporter = nodemailer.createTransport({
-        host: 'live.smtp.mailtrap.io',
-        port: 587,
-        secure: false, // Brevo requires STARTTLS
+        host: process.env.SMTP_HOST,
+        port: Number(process.env.SMTP_PORT),
+        secure: false, // STARTTLS (Mailtrap uses port 587)
         auth: {
-          user: process.env.SMTP_USER, // your email login
-          pass: process.env.SMTP_PASS, // the generated SMTP key
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
         },
-      });      
+      });
+            
 
       await transporter.sendMail({
         from: process.env.SMTP_USER,
