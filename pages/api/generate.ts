@@ -30,6 +30,7 @@ Use clear formatting, short paragraphs, and bullet points where appropriate.
 `;
 
   try {
+    console.log('🧠 Calling OpenAI with prompt...');
     const aiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -54,6 +55,7 @@ Use clear formatting, short paragraphs, and bullet points where appropriate.
     }
 
     const content = json.choices[0].message.content;
+    console.log('✅ OpenAI content received');
 
     const html = `
       <html>
@@ -88,13 +90,13 @@ Use clear formatting, short paragraphs, and bullet points where appropriate.
       </html>
     `;
 
-    // 🔹 Convert HTML to PDF using PDFLayer
+    console.log('📄 Sending HTML to PDFLayer...');
     const pdfResponse = await fetch(`https://api.pdflayer.com/api/convert?access_key=${process.env.PDFLAYER_API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         document_html: html,
-        test: 1 // Enable sandbox/test mode if needed
+        test: 1
       })
     });
 
@@ -103,6 +105,7 @@ Use clear formatting, short paragraphs, and bullet points where appropriate.
     }
 
     const pdfBytes = await pdfResponse.arrayBuffer();
+    console.log('✅ PDF generated, bytes:', pdfBytes.byteLength);
 
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
@@ -114,6 +117,19 @@ Use clear formatting, short paragraphs, and bullet points where appropriate.
       },
     });
 
+    await new Promise((resolve, reject) => {
+      transporter.verify((error, success) => {
+        if (error) {
+          console.error('❌ SMTP verification failed:', error);
+          return reject(error);
+        } else {
+          console.log('✅ SMTP verified');
+          resolve(success);
+        }
+      });
+    });
+
+    console.log('📤 Preparing to send email to:', email);
     await transporter.sendMail({
       from: 'test@leadmagnet.dev',
       to: email,
@@ -126,10 +142,11 @@ Use clear formatting, short paragraphs, and bullet points where appropriate.
         },
       ],
     });
+    console.log('✅ Email sent to:', email);
 
     res.status(200).json({ message: 'PDF sent successfully', content });
   } catch (err) {
-    console.error(err);
+    console.error('❌ Error in handler:', err);
     res.status(500).json({ error: 'Failed to generate or send content' });
   }
 }
