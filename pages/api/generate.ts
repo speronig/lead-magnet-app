@@ -86,15 +86,14 @@ Use clear formatting, short paragraphs, and bullet points where appropriate.
 
     // 🔹 Email the PDF with Nodemailer
     const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: 465,
-        secure: true, // ⬅️ only if port is 465
+        host: 'smtp-relay.brevo.com',
+        port: 587,
+        secure: false, // Brevo requires STARTTLS
         auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
+          user: process.env.SMTP_USER, // your email login
+          pass: process.env.SMTP_PASS, // the generated SMTP key
         },
-      });
-      
+      });      
 
     await transporter.sendMail({
       from: process.env.SMTP_USER,
